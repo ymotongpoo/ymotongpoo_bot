@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -40,7 +41,7 @@ func FetchGooglePlusPost(id, lastPost string) {
 
 // JPY returns exchange rate for each unit foreign currencies.
 func JPY(args []string) string {
-	return "hoge"
+	return "hoge+1"
 }
 
 func main() {
@@ -83,6 +84,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		log.Printf("Get request: %v", data)
+		fmt.Fprintf(w, "とんぷbotです")
 	}
 }
 
