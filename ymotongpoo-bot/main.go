@@ -33,7 +33,7 @@ type Message struct {
 	Text            string `json:"text"`
 }
 
-var CommandMap map[string](func(args []string) string)
+var CommandMap = make(map[string](func(args []string) string))
 
 func FetchGooglePlusPost(id, lastPost string) {
 	return
