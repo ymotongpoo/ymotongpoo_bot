@@ -96,6 +96,8 @@ func execCommand(ev Event) (result string) {
 		command, exist := CommandMap[commandStr]
 		if exist {
 			return command(tokens[1:])
+		} else {
+			return fmt.Sprintf("しらないコマンド: %s\n", tokens[0])
 		}
 	}
 	return
