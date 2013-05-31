@@ -76,6 +76,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		results := handleEvents(status.Events)
 		if len(results) > 0 {
 			results = strings.TrimRight(results, "\n ")
+			if runes := []runes(results); len(runes) > 1000 {
+				results = string(runes[0:999])
+			}
+			fmt.Fprintln(w, results)
 		}
 
 	case "GET":
@@ -100,12 +104,12 @@ func execCommand(ev Event) (result string) {
 			return fmt.Sprintf("しらないコマンド: %s\n", tokens[0])
 		}
 	}
-	return
+	return result
 }
 
 func handleEvents(events []Event) (results string) {
 	for _, ev := range events {
 		results += execCommand(ev)
 	}
-	return
+	return results
 }
