@@ -76,7 +76,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		results := handleEvents(status.Events)
 		if len(results) > 0 {
 			results = strings.TrimRight(results, "\n ")
-			if runes := []runes(results); len(runes) > 1000 {
+			if runes := []rune(results); len(runes) > 1000 {
 				results = string(runes[0:999])
 			}
 			fmt.Fprintln(w, results)
