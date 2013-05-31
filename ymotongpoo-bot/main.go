@@ -84,7 +84,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		log.Printf("Get request: %v", data)
-		fmt.Fprintf(w, "とんぷbotです")
+		fmt.Fprintln(w, "とんぷbotです")
 	}
 }
 
