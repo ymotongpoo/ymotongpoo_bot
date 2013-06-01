@@ -102,7 +102,7 @@ func JPY(args []string) string {
 	if len(f.Results.Rates) == 0 {
 		data, _ := ioutil.ReadAll(resp.Body)
 		log.Println(data)
-		return "failed"
+		return resp.Status
 	}
 
 	results := make([]string, len(f.Results.Rates))
