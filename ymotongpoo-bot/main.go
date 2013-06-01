@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -33,7 +34,41 @@ type Message struct {
 	Text            string `json:"text"`
 }
 
+type Finance struct {
+	Results struct {
+		Rates []Rate `json:"rate"`
+	} `json:"results"`
+}
+
+// Rate struct for Yahoo Finance
+type Rate struct {
+	Id   string  `json:"id"`
+	Name string  `json:"Name"`
+	Rate float64 `json:"Rate"`
+	Date string  `json:"Date"`
+	Time string  `json:"Time"`
+	Ask  float64 `json:"Ask"`
+	Bid  float64 `json:"Bid"`
+}
+
+func (r Rate) String() string {
+	tokens := strings.Split(r.Name, " ")
+	if len(tokens) == 3 {
+		return fmt.Sprintf("1%v = %vJPY [%v %v]",
+			tokens[0],
+			r.Rate,
+			r.Date,
+			r.Time,
+		)
+	}
+	return ""
+}
+
 var CommandMap = make(map[string](func(args []string) string))
+
+const (
+	YahooFinanceAPI = "http://query.yahooapis.com/v1/public/yql"
+)
 
 func FetchGooglePlusPost(id, lastPost string) {
 	return
@@ -41,7 +76,41 @@ func FetchGooglePlusPost(id, lastPost string) {
 
 // JPY returns exchange rate for each unit foreign currencies.
 func JPY(args []string) string {
-	return "hoge+1"
+	q := `select * from yahoo.finance.xchange where pair in ` +
+		`("USDJPY","EURJPY","GBPJPY","CNYJPY")`
+	v := url.Values{}
+	v.Set("q", q)
+	v.Set("format", "json")
+	v.Set("diagonstics", "true")
+	v.Set("env", "store://datatables.org/alltableswithkeys")
+
+	req, err := http.NewRequest("GET", YahooFinanceAPI, nil)
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+	req.Form = v
+	c := &http.Client{}
+	resp, err := c.Do(req)
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+	defer resp.Body.Close()
+
+	var f Finance
+	err = json.NewDecoder(resp.Body).Decode(&f)
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+
+	results := make([]string, len(f.Results.Rates))
+	for i, r := range f.Results.Rates {
+		results[i] = r.String()
+	}
+
+	return strings.Join(results, " / ")
 }
 
 func main() {
@@ -87,7 +156,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err.Error())
 		}
-		log.Printf("Get request: %v", data)
+		log.Printf("Get request: %v", string(data))
 		fmt.Fprintln(w, "とんぷbotです")
 	}
 }
