@@ -85,14 +85,7 @@ func JPY(args []string) string {
 	v.Set("env", "store://datatables.org/alltableswithkeys")
 	urlStr := YahooFinanceAPI + "?" + v.Encode()
 
-	req, err := http.NewRequest("GET", urlStr, nil)
-	log.Println(urlStr)
-	if err != nil {
-		log.Println(err.Error())
-		return ""
-	}
-	c := &http.Client{}
-	resp, err := c.Do(req)
+	resp, err := http.Get(urlStr)
 	if err != nil {
 		log.Println(err.Error())
 		return ""
