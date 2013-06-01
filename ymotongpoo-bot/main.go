@@ -84,12 +84,11 @@ func JPY(args []string) string {
 	v.Set("diagonstics", "true")
 	v.Set("env", "store://datatables.org/alltableswithkeys")
 
-	req, err := http.NewRequest("GET", YahooFinanceAPI, nil)
+	req, err := http.NewRequest("GET", YahooFinanceAPI+"?"+v.Encode(), nil)
 	if err != nil {
 		log.Println(err.Error())
 		return ""
 	}
-	req.Form = v
 	c := &http.Client{}
 	resp, err := c.Do(req)
 	if err != nil {
@@ -102,8 +101,6 @@ func JPY(args []string) string {
 	err = json.NewDecoder(resp.Body).Decode(&f)
 	if err != nil {
 		log.Println(err.Error())
-		data, _ := ioutil.ReadAll(resp.Body)
-		log.Println(string(data))
 		return ""
 	}
 
