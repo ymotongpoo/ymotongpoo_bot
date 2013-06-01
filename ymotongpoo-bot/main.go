@@ -90,7 +90,7 @@ func Help(args []string) string {
 // JPY returns exchange rate for each unit foreign currencies.
 func JPY(args []string) string {
 	q := `select * from yahoo.finance.xchange where pair in ` +
-		`("USDJPY","EURJPY","GBPJPY","CNYJPY")`
+		`("USDJPY","EURJPY","GBPJPY","CADJPY","CNYJPY")`
 	v := url.Values{}
 	v.Set("q", q)
 	v.Set("format", "json")
