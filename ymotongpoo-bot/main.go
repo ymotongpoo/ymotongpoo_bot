@@ -39,10 +39,7 @@ type Message struct {
 // CommandMap holds pairs of command name and counterpart function name.
 type CommandMap map[string](func(args []string) string)
 
-var commandMap = CommandMap{
-	"help": Help,
-	"jpy":  JPY,
-}
+var commandMap CommandMap
 
 // Structs for Yahoo Finance
 type Finance struct {
@@ -121,6 +118,13 @@ func JPY(args []string) string {
 	}
 
 	return strings.Join(results, " / ")
+}
+
+func init() {
+	commandMap = CommandMap{
+		"help": Help,
+		"jpy":  JPY,
+	}
 }
 
 // main
