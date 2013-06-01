@@ -92,7 +92,7 @@ func JPY(args []string) string {
 	}
 	defer resp.Body.Close()
 	data, _ := ioutil.ReadAll(resp.Body)
-	log.Println(data)
+	log.Println(string(data))
 
 	var f Finance
 	err = json.NewDecoder(resp.Body).Decode(&f)
