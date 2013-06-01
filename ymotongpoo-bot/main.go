@@ -44,13 +44,13 @@ type Finance struct {
 
 // Rate struct for Yahoo Finance
 type Rate struct {
-	Id   string  `json:"id"`
-	Name string  `json:"Name"`
-	Rate float64 `json:"Rate"`
-	Date string  `json:"Date"`
-	Time string  `json:"Time"`
-	Ask  float64 `json:"Ask"`
-	Bid  float64 `json:"Bid"`
+	Id   string `json:"id"`
+	Name string `json:"Name"`
+	Rate string `json:"Rate"`
+	Date string `json:"Date"`
+	Time string `json:"Time"`
+	Ask  string `json:"Ask"`
+	Bid  string `json:"Bid"`
 }
 
 func (r Rate) String() string {
