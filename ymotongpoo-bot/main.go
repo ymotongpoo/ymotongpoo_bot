@@ -101,8 +101,8 @@ func JPY(args []string) string {
 		return ""
 	}
 
-	results := make([]string, len(f.Results.Rates))
-	for i, r := range f.Results.Rates {
+	results := make([]string, len(f.Query.Results.Rates))
+	for i, r := range f.Query.Results.Rates {
 		results[i] = r.String()
 	}
 
