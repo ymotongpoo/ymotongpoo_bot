@@ -83,7 +83,7 @@ func (r Rate) String() string {
 type Reddit struct {
 	Data struct {
 		Children struct {
-			Data []ItemData `json:"data"`
+			ItemData []ItemData `json:"data"`
 		} `json:"children"`
 	} `json:"data"`
 }
@@ -182,8 +182,8 @@ func RedditHot(args []string) string {
 		return ""
 	}
 
-	results := make([]string, len(r.Data.Children.Data))
-	for i, d := range r.Data.Children.Data {
+	results := make([]string, len(r.Data.Children.ItemData))
+	for i, d := range r.Data.Children.ItemData {
 		results[i] = d.String()
 	}
 	return strings.Join(results, "\n")
