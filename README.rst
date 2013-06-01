@@ -6,5 +6,5 @@
  ymotongpoo_bot
 ================
 
-This is a repository for source code of Linger bot "ymotongpoo_bot".
+This is a repository for source code of Lingr bot "ymotongpoo_bot".
 

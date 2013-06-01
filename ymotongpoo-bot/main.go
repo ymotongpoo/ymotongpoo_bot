@@ -12,10 +12,10 @@ import (
 	"time"
 )
 
-// CommandPrefix defines prefix characters to call Linger bot from Linger.
+// CommandPrefix defines prefix characters to call Lingr bot from Lingr.
 const CommandPrefix = "$$"
 
-// Structs for Linger bot push notificaion.
+// Structs for Lingr bot push notificaion.
 type Status struct {
 	Events []Event `json:"events"`
 }
