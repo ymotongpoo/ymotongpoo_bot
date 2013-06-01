@@ -35,11 +35,11 @@ type Message struct {
 }
 
 type Finance struct {
-	Results RateResults `json:"results"`
-}
-
-type RateResults struct {
-	Rates []Rate `json:"rate"`
+	Query struct {
+		Results struct {
+			Rates []Rate `json:"rate"`
+		} `json:"results"`
+	} `json:"query"`
 }
 
 // Rate struct for Yahoo Finance
