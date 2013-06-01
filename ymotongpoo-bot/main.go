@@ -167,6 +167,7 @@ func RedditHot(args []string) string {
 		v.Set("limit", "3")
 	}
 	urlStr := RedditAPI + "?" + v.Encode()
+	log.Println(urlStr)
 
 	resp, err := http.Get(urlStr)
 	if err != nil {
