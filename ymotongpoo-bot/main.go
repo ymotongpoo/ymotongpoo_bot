@@ -12,8 +12,10 @@ import (
 	"time"
 )
 
+// CommandPrefix defines prefix characters to call Linger bot from Linger.
 const CommandPrefix = "$$"
 
+// Structs for Linger bot push notificaion.
 type Status struct {
 	Events []Event `json:"events"`
 }
@@ -34,6 +36,15 @@ type Message struct {
 	Text            string `json:"text"`
 }
 
+// CommandMap holds pairs of command name and counterpart function name.
+type CommandMap map[string](func(args []string) string)
+
+var commandMap = CommandMap{
+	"help": Help,
+	"jpy":  JPY,
+}
+
+// Structs for Yahoo Finance
 type Finance struct {
 	Query struct {
 		Results struct {
@@ -42,7 +53,6 @@ type Finance struct {
 	} `json:"query"`
 }
 
-// Rate struct for Yahoo Finance
 type Rate struct {
 	Id   string `json:"id"`
 	Name string `json:"Name"`
@@ -53,6 +63,7 @@ type Rate struct {
 	Bid  string `json:"Bid"`
 }
 
+// String returns formatted string of a currency rate,
 func (r Rate) String() string {
 	tokens := strings.Split(r.Name, " ")
 	if len(tokens) == 3 {
@@ -66,14 +77,17 @@ func (r Rate) String() string {
 	return ""
 }
 
-var CommandMap = make(map[string](func(args []string) string))
-
 const (
 	YahooFinanceAPI = "http://query.yahooapis.com/v1/public/yql"
 )
 
-func FetchGooglePlusPost(id, lastPost string) {
-	return
+// Help returns a command list.
+func Help(args []string) string {
+	usage := "とんぷbot command list\n"
+	for k, _ := range commandMap {
+		usage += k + "\n"
+	}
+	return usage
 }
 
 // JPY returns exchange rate for each unit foreign currencies.
@@ -109,9 +123,8 @@ func JPY(args []string) string {
 	return strings.Join(results, " / ")
 }
 
+// main
 func main() {
-	CommandMap["jpy"] = JPY
-
 	// Start polling
 	go func() {
 		for {
@@ -162,7 +175,7 @@ func execCommand(ev Event) (result string) {
 	tokens := strings.Split(ev.Message.Text, " ")
 	if strings.HasPrefix(tokens[0], CommandPrefix) {
 		commandStr := strings.TrimLeft(tokens[0], CommandPrefix)
-		command, exist := CommandMap[commandStr]
+		command, exist := commandMap[commandStr]
 		if exist {
 			return command(tokens[1:])
 		} else {
@@ -172,6 +185,7 @@ func execCommand(ev Event) (result string) {
 	return result
 }
 
+// handleEvents returns
 func handleEvents(events []Event) (results string) {
 	for _, ev := range events {
 		results += execCommand(ev)
