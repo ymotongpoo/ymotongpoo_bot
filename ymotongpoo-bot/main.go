@@ -102,7 +102,7 @@ func JPY(args []string) string {
 	err = json.NewDecoder(resp.Body).Decode(&f)
 	if err != nil {
 		log.Println(err.Error())
-		date, _ := ioutil.ReadAll(resp.Body)
+		data, _ := ioutil.ReadAll(resp.Body)
 		log.Println(string(data))
 		return ""
 	}
