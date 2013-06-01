@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -41,6 +42,11 @@ type CommandMap map[string](func(args []string) string)
 
 var commandMap CommandMap
 
+const (
+	YahooFinanceAPI = "http://query.yahooapis.com/v1/public/yql"
+	RedditAPI       = "http://www.reddit.com/r/golang/hot.json"
+)
+
 // Structs for Yahoo Finance
 type Finance struct {
 	Query struct {
@@ -60,7 +66,7 @@ type Rate struct {
 	Bid  string `json:"Bid"`
 }
 
-// String returns formatted string of a currency rate,
+// String returns formatted string of a currency rate.
 func (r Rate) String() string {
 	tokens := strings.Split(r.Name, " ")
 	if len(tokens) == 3 {
@@ -68,15 +74,37 @@ func (r Rate) String() string {
 			tokens[0],
 			r.Rate,
 			r.Date,
-			r.Time,
-		)
+			r.Time)
 	}
 	return ""
 }
 
-const (
-	YahooFinanceAPI = "http://query.yahooapis.com/v1/public/yql"
-)
+// Structs for Reddit
+type Reddit struct {
+	Data struct {
+		Children []Child `json:"children"`
+	} `json:"data"`
+}
+
+type Child struct {
+	ItemData struct {
+		Score int    `json:"score"`
+		Ups   int    `json:"ups"`
+		Downs int    `json:"downs"`
+		Title string `json:"title"`
+		URL   string `json:"url"`
+	} `json:"data"`
+}
+
+// String returns formatted string of a reddit item.
+func (c Child) String() string {
+	return fmt.Sprintf("%v (u:%v, d:%v) %v : %v",
+		c.ItemData.Score,
+		c.ItemData.Ups,
+		c.ItemData.Downs,
+		c.ItemData.Title,
+		c.ItemData.URL)
+}
 
 // Help returns a command list.
 func Help(args []string) string {
@@ -120,10 +148,53 @@ func JPY(args []string) string {
 	return strings.Join(results, " / ")
 }
 
+// RedditHot returns hot topic in Reddit under subreddit "golang".
+// This takes 1st argument as upper limit of fetching item.
+// Default is 3 and max is 5.
+func RedditHot(args []string) string {
+	v := url.Values{}
+	if len(args) > 0 {
+		limit, err := strconv.Atoi(args[0])
+		if err != nil {
+			return "引数が変だよ: " + strings.Join(args, " ")
+		}
+		if limit > 5 {
+			v.Set("limit", "5")
+		} else {
+			v.Set("limit", args[0])
+		}
+	} else {
+		v.Set("limit", "3")
+	}
+	urlStr := RedditAPI + "?" + v.Encode()
+	log.Println(urlStr)
+
+	resp, err := http.Get(urlStr)
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+	defer resp.Body.Close()
+
+	var r Reddit
+	err = json.NewDecoder(resp.Body).Decode(&r)
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+
+	results := make([]string, len(r.Data.Children))
+	for i, c := range r.Data.Children {
+		results[i] = c.String()
+	}
+	return strings.Join(results, "\n")
+}
+
 func init() {
 	commandMap = CommandMap{
-		"help": Help,
-		"jpy":  JPY,
+		"help":   Help,
+		"jpy":    JPY,
+		"reddit": RedditHot,
 	}
 }
 
