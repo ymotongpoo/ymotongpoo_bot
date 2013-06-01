@@ -82,22 +82,22 @@ func (r Rate) String() string {
 // Structs for Reddit
 type Reddit struct {
 	Data struct {
-		Children []struct {
-			ItemData ItemData `json:"data"`
-		} `json:"children"`
+		Children []Child `json:"children"`
 	} `json:"data"`
 }
 
-type ItemData struct {
-	Score int    `json:"score"`
-	Ups   int    `json:"ups"`
-	Downs int    `json:"downs"`
-	Title string `json:"title"`
-	URL   string `json:"url"`
+type Child struct {
+	ItemData struct {
+		Score int    `json:"score"`
+		Ups   int    `json:"ups"`
+		Downs int    `json:"downs"`
+		Title string `json:"title"`
+		URL   string `json:"url"`
+	} `json:"data"`
 }
 
 // String returns formatted string of a reddit item.
-func (c Children) String() string {
+func (c Child) String() string {
 	return fmt.Sprintf("%v (u:%v, d:%v) %v : %v",
 		c.ItemData.Score,
 		c.ItemData.Ups,
