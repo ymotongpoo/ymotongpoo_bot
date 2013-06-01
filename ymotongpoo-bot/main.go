@@ -97,13 +97,13 @@ type ItemData struct {
 }
 
 // String returns formatted string of a reddit item.
-func (i ItemData) String() string {
+func (c Children) String() string {
 	return fmt.Sprintf("%v (u:%v, d:%v) %v : %v",
-		i.Score,
-		i.Ups,
-		i.Downs,
-		i.Title,
-		i.URL)
+		c.ItemData.Score,
+		c.ItemData.Ups,
+		c.ItemData.Downs,
+		c.ItemData.Title,
+		c.ItemData.URL)
 }
 
 // Help returns a command list.
@@ -184,8 +184,8 @@ func RedditHot(args []string) string {
 	}
 
 	results := make([]string, len(r.Data.Children))
-	for i, d := range r.Data.Children {
-		results[i] = d.String()
+	for i, c := range r.Data.Children {
+		results[i] = c.String()
 	}
 	return strings.Join(results, "\n")
 }
