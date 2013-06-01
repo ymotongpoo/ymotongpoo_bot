@@ -99,6 +99,12 @@ func JPY(args []string) string {
 		return ""
 	}
 
+	if len(f.Results.Rates) == 0 {
+		data, _ := ioutil.ReadAll(resp.Body)
+		log.Println(data)
+		return "failed"
+	}
+
 	results := make([]string, len(f.Results.Rates))
 	for i, r := range f.Results.Rates {
 		results[i] = r.String()
