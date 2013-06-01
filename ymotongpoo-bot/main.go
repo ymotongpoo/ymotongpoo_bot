@@ -82,13 +82,13 @@ func (r Rate) String() string {
 // Structs for Reddit
 type Reddit struct {
 	Data struct {
-		Children []struct {
-			ItemData ItemData `json:"data"`
+		Children struct {
+			ItemData []ItemDatum `json:"data"`
 		} `json:"children"`
 	} `json:"data"`
 }
 
-type ItemData struct {
+type ItemDatum struct {
 	Score int    `json:"score"`
 	Ups   int    `json:"ups"`
 	Downs int    `json:"downs"`
