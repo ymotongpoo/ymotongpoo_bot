@@ -91,18 +91,14 @@ func JPY(args []string) string {
 		return ""
 	}
 	defer resp.Body.Close()
+	data, _ := ioutil.ReadAll(resp.Body)
+	log.Println(data)
 
 	var f Finance
 	err = json.NewDecoder(resp.Body).Decode(&f)
 	if err != nil {
 		log.Println(err.Error())
 		return ""
-	}
-
-	if len(f.Results.Rates) == 0 {
-		data, _ := ioutil.ReadAll(resp.Body)
-		log.Println(data)
-		return resp.Status
 	}
 
 	results := make([]string, len(f.Results.Rates))
